@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEOOH| Phygital Experience</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Syne:wght@600;700&display=swap" rel="stylesheet">
+  
+  <!-- Estilos do Dialogflow Messenger -->
+  <link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css">
+  <style>
+    :root {
+      /* NEOOH */
+      --neooh-deep: #4a1a6b;
+      --neooh-vivid: #d946a6;
+      --neooh-white: #ffffff;
+
+      /* SoulCode */
+      --soulcode-paper: #efedde;
+      --soulcode-blue: #0000ff;
+
+      /* Base system */
+      --ink-950: #06080f;
+      --ink-900: #0c1020;
+      --ink-700: #1b2140;
+      --surface-glass: rgba(8, 12, 24, 0.62);
+      --surface-card: rgba(8, 12, 24, 0.5);
+      --surface-border: rgba(255, 255, 255, 0.16);
+      --text-primary: var(--neooh-white);
+      --text-soft: rgba(255, 255, 255, 0.76);
+      --text-muted: rgba(255, 255, 255, 0.64);
+      --bot-bubble: rgba(255, 255, 255, 0.08);
+      --user-bubble: linear-gradient(130deg, rgba(217, 70, 166, 0.92), rgba(74, 26, 107, 0.92));
+      --shadow-elevated: 0 20px 50px rgba(0, 0, 0, 0.35);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --space-1: 0.5rem;
+      --space-2: 0.75rem;
+      --space-3: 1rem;
+      --space-4: 1.5rem;
+      --space-5: 2rem;
+      --space-6: 3rem;
+      --layout-max: 1180px;
+    }
+
+    /* Estilos de Posicionamento do Dialogflow Messenger */
+    df-messenger {
+      width: 100%;
+      height: 100%;
+      min-height: 400px;
+      --df-messenger-font-color: var(--text-primary);
+      --df-messenger-font-family: "Space Grotesk", sans-serif;
+      --df-messenger-chat-background: transparent !important;
+      --df-messenger-message-bot-background: var(--bot-bubble);
+      --df-messenger-message-user-background: #4a1a6b;
+      --df-messenger-input-background: rgba(5, 8, 18, 0.74);
+      --df-messenger-input-font-color: rgba(7, 11, 24, 0.66) !important;
+      --df-messenger-chat-window-background: transparent !important;
+    }
+
+    df-messenger::part(titlebar) {
+      display: none;
+    }
+    df-messenger-chat::part(header) {
+      display: none;
+    }
+
+    /* Força o fundo transparente acessando o Shadow DOM do Dialogflow */
+    df-messenger-chat, 
+    df-messenger-chat::part(chat-wrapper), 
+    df-messenger-chat::part(message-list) {
+      background-color: transparent !important;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      font-family: "Space Grotesk", "Segoe UI", sans-serif;
+      color: var(--text-primary);
+      background:
+        radial-gradient(1200px 700px at 16% 18%, rgba(74, 26, 107, 0.7), transparent 58%),
+        radial-gradient(900px 560px at 82% 78%, rgba(0, 0, 255, 0.38), transparent 64%),
+        radial-gradient(820px 520px at 75% 16%, rgba(217, 70, 166, 0.36), transparent 62%),
+        linear-gradient(130deg, var(--ink-950), var(--ink-900));
+      background-size: 140% 140%;
+      animation: orbitPulse 16s ease-in-out infinite;
+      position: relative;
+      isolation: isolate;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: -25vmax;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    body::before {
+      background:
+        radial-gradient(circle at 30% 35%, rgba(255, 255, 255, 0.07) 0 1px, transparent 1px),
+        radial-gradient(circle at 65% 60%, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.06) 0 1px, transparent 1px);
+      background-size: 280px 280px, 340px 340px, 220px 220px;
+      opacity: 0.45;
+      animation: dustDrift 22s linear infinite;
+    }
+
+    body::after {
+      background: radial-gradient(circle at 50% 50%, rgba(239, 237, 222, 0.05), transparent 58%);
+      transform: scale(1.06);
+      animation: coreBreath 14s ease-in-out infinite;
+    }
+
+    .site-wrap {
+      width: min(var(--layout-max), 92vw);
+      margin: 0 auto;
+      padding: 1.2rem 0 2rem;
+      display: grid;
+      gap: 1.15rem;
+    }
+
+    #inicio {
+      display: grid;
+      gap: 0.95rem;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      padding: 0.2rem 0.3rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      letter-spacing: 0.02em;
+    }
+
+    .brand-badge {
+      width: 44px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-family: "Syne", "Space Grotesk", sans-serif;
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--neooh-white);
+      background:
+        conic-gradient(from 210deg, var(--neooh-deep), var(--soulcode-blue), var(--neooh-vivid), var(--neooh-deep));
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.28), 0 6px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .brand-title {
+      font-family: "Syne", "Space Grotesk", sans-serif;
+      font-size: clamp(1rem, 0.9vw + 0.8rem, 1.3rem);
+      font-weight: 700;
+      color: var(--neooh-white);
+      line-height: 1.2;
+    }
+
+    .brand-subtitle {
+      color: var(--text-soft);
+      font-size: 0.84rem;
+    }
+
+    .topnav {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .topnav a {
+      text-decoration: none;
+      color: var(--text-soft);
+      font-size: 0.9rem;
+      padding: 0.45rem 0.55rem;
+      border-radius: 10px;
+      transition: color 0.2s ease, background 0.2s ease;
+    }
+
+    .topnav a:hover,
+    .topnav a:focus-visible {
+      color: var(--neooh-white);
+      background: rgba(255, 255, 255, 0.08);
+      outline: none;
+    }
+
+    .cta-link {
+      text-decoration: none;
+      color: var(--neooh-white);
+      font-weight: 700;
+      font-size: 0.86rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.08);
+      padding: 0.5rem 0.9rem;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .cta-link:hover,
+    .cta-link:focus-visible {
+      transform: translateY(-1px);
+      border-color: rgba(255, 255, 255, 0.45);
+      outline: none;
+    }
+
+    .hero {
+      position: relative;
+      border-radius: 28px;
+      border: 1px solid var(--surface-border);
+      overflow: hidden;
+      box-shadow: var(--shadow-elevated);
+      min-height: clamp(300px, 48vh, 560px);
+      display: grid;
+      align-items: end;
+      isolation: isolate;
+    }
+
+    .hero-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(1.2) contrast(1.06) brightness(0.75);
+      z-index: -3;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(155deg, rgba(8, 10, 23, 0.2), rgba(8, 10, 23, 0.8) 64%, rgba(8, 10, 23, 0.96)),
+        radial-gradient(circle at 78% 26%, rgba(0, 0, 255, 0.42), transparent 48%),
+        radial-gradient(circle at 22% 72%, rgba(217, 70, 166, 0.45), transparent 58%);
+      z-index: -2;
+    }
+
+    .hero-content {
+      display: grid;
+      gap: var(--space-3);
+      padding: clamp(1.1rem, 3vw, 2.5rem);
+      width: min(780px, 100%);
+    }
+
+    .eyebrow {
+      color: var(--soulcode-paper);
+      font-size: 0.8rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .hero-title {
+      font-family: "Syne", "Space Grotesk", sans-serif;
+      font-size: clamp(1.6rem, 2.4vw + 1rem, 3rem);
+      line-height: 1.06;
+      letter-spacing: 0.01em;
+      max-width: 20ch;
+    }
+
+    .hero-description {
+      color: var(--text-soft);
+      max-width: 60ch;
+      line-height: 1.5;
+      font-size: 1rem;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin-top: 0.2rem;
+    }
+
+    .hero-tag {
+      font-size: 0.83rem;
+      color: var(--neooh-white);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 999px;
+      padding: 0.35rem 0.7rem;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(3px);
+    }
+
+    .hero-note {
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      margin-top: 0.2rem;
+    }
+
+    .page-main {
+      display: grid;
+      gap: 1rem;
+      scroll-margin-top: 1rem;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.8rem;
+    }
+
+    .info-card {
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--surface-border);
+      background: var(--surface-card);
+      backdrop-filter: blur(12px);
+      padding: 0.95rem;
+      display: grid;
+      gap: 0.4rem;
+      min-height: 122px;
+    }
+
+    .info-card-title {
+      font-family: "Syne", "Space Grotesk", sans-serif;
+      font-size: 1rem;
+      line-height: 1.2;
+    }
+
+    .info-card-text {
+      color: var(--text-soft);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .section-block {
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--surface-border);
+      background: var(--surface-card);
+      backdrop-filter: blur(12px);
+      padding: clamp(1rem, 2.2vw, 1.6rem);
+      display: grid;
+      gap: var(--space-3);
+    }
+
+    .section-heading {
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    .section-kicker {
+      color: var(--soulcode-paper);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .section-title {
+      font-family: "Syne", "Space Grotesk", sans-serif;
+      font-size: clamp(1.25rem, 1.4vw + 0.9rem, 2rem);
+      line-height: 1.1;
+      letter-spacing: 0.01em;
+      max-width: 30ch;
+    }
+
+    .section-description {
+      color: var(--text-soft);
+      line-height: 1.5;
+      max-width: 70ch;
+      font-size: 0.96rem;
+    }
+
+    .institutional-video-wrap {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      min-height: clamp(260px, 40vh, 460px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: var(--shadow-elevated);
+    }
+
+    .institutional-video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border: 0;
+      filter: saturate(1.08) contrast(1.06) brightness(0.9);
+    }
+
+    .context-gallery {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+
+    .context-tile {
+      position: relative;
+      min-height: clamp(260px, 32vh, 380px);
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: flex-end;
+      padding: 1rem;
+      isolation: isolate;
+    }
+
+    .context-tile::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      filter: saturate(1.06) contrast(1.05);
+      transform: scale(1.02);
+      z-index: -2;
+    }
+
+    .context-tile::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(8, 10, 23, 0.1), rgba(8, 10, 23, 0.8));
+      z-index: -1;
+    }
+
+    .tile-park::before {
+      background-image: url("https://cidadedesaopaulo.com/wp-content/uploads/2023/10/101-Parque-Ibirapuera.jpg");
+    }
+
+    .tile-cafeteria::before {
+      background-image: url("https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=1400&q=80");
+    }
+
+    .tile-club::before {
+      background-image: url("https://minastenisclube.com.br/wp-content/uploads/2025/11/Parceriaampliada_0893942001762411462.png");
+    }
+
+    .tile-shopping::before {
+      background-image: url("https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?auto=format&fit=crop&w=1400&q=80");
+    }
+
+    .context-tile-content {
+      display: grid;
+      gap: 0.35rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .context-tile-title {
+      font-family: "Syne", "Space Grotesk", sans-serif;
+      font-size: 1.25rem;
+      line-height: 1.1;
+    }
+
+    .context-tile-text {
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 0.92rem;
+      line-height: 1.45;
+      max-width: 36ch;
+    }
+
+    .challenge-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.8rem;
+    }
+
+    .challenge-card {
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(7, 11, 24, 0.66);
+      padding: 1rem;
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .challenge-label {
+      color: var(--neooh-vivid);
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .challenge-title {
+      font-family: "Syne", "Space Grotesk", sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.2;
+    }
+
+    .challenge-text {
+      color: var(--text-soft);
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0.55rem;
+    }
+
+    .member-card {
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(7, 11, 24, 0.66);
+      padding: 0.72rem;
+      display: grid;
+      gap: 0.4rem;
+      align-content: start;
+    }
+
+    .member-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 0.84rem;
+      color: var(--neooh-white);
+      background: linear-gradient(140deg, var(--neooh-vivid), var(--soulcode-blue));
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .member-name {
+      font-family: "Syne", "Space Grotesk", sans-serif;
+      font-size: 0.88rem;
+      line-height: 1.2;
+    }
+
+    .member-role {
+      color: var(--soulcode-paper);
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .member-text {
+      color: var(--text-soft);
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+
+    .member-link {
+      text-decoration: none;
+      color: var(--neooh-vivid);
+      font-size: 0.78rem;
+      font-weight: 600;
+      transition: opacity 0.2s ease;
+    }
+
+    .member-link:hover {
+      opacity: 0.8;
+    }
+
+    .app {
+      width: min(980px, 100%);
+      height: min(78vh, 760px);
+      min-height: 560px;
+      display: grid;
+      margin: 0 auto;
+    }
+
+    .chat-shell {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: var(--space-4);
+      border-radius: var(--radius-xl);
+      background: var(--surface-glass);
+      border: 1px solid var(--surface-border);
+      box-shadow: var(--shadow-elevated);
+      backdrop-filter: blur(14px);
+      padding: clamp(1rem, 2.2vw, 2rem);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chat-shell::before {
+      content: "";
+      position: absolute;
+      top: -26%;
+      left: -10%;
+      width: 48%;
+      height: 62%;
+      background: radial-gradient(circle, rgba(217, 70, 166, 0.22), transparent 62%);
+      filter: blur(24px);
+      pointer-events: none;
+    }
+
+    .chat-shell::after {
+      content: "";
+      position: absolute;
+      bottom: -36%;
+      right: -20%;
+      width: 58%;
+      height: 72%;
+      background: radial-gradient(circle, rgba(0, 0, 255, 0.2), transparent 68%);
+      filter: blur(28px);
+      pointer-events: none;
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      position: relative;
+      z-index: 1;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.85rem;
+      color: var(--soulcode-paper);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      padding: 0.5rem 0.8rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .status::before {
+      content: "";
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 50%;
+      background: var(--soulcode-blue);
+      box-shadow: 0 0 14px rgba(0, 0, 255, 0.95);
+      animation: statusPulse 2s ease-in-out infinite;
+    }
+
+    .chat-log {
+      position: relative;
+      z-index: 1;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      padding-right: 0.35rem;
+      display: grid;
+      align-content: start;
+      gap: var(--space-3);
+    }
+
+    .chat-log::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .chat-log::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 999px;
+    }
+
+    .message-row {
+      display: flex;
+      width: 100%;
+      animation: messageIn 260ms ease;
+    }
+
+    .message-row.bot {
+      justify-content: flex-start;
+    }
+
+    .message-row.user {
+      justify-content: flex-end;
+    }
+
+    .message {
+      width: fit-content;
+      max-width: min(72ch, 86%);
+      border-radius: var(--radius-lg);
+      padding: 0.9rem 1rem;
+      line-height: 1.45;
+      font-size: 0.97rem;
+      border: 1px solid transparent;
+    }
+
+    .message.bot {
+      background: var(--bot-bubble);
+      border-color: rgba(255, 255, 255, 0.14);
+      color: var(--neooh-white);
+      border-top-left-radius: 0.4rem;
+    }
+
+    .message.user {
+      background: var(--user-bubble);
+      color: var(--neooh-white);
+      border-top-right-radius: 0.4rem;
+      box-shadow: 0 10px 22px rgba(74, 26, 107, 0.36);
+    }
+
+    .quick-actions {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      padding-top: 0.4rem;
+      padding-bottom: 0.2rem;
+    }
+
+    .chip {
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--soulcode-paper);
+      border-radius: 999px;
+      font-size: 0.86rem;
+      padding: 0.45rem 0.78rem;
+      cursor: pointer;
+      transition: transform 0.18s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .chip:hover,
+    .chip:focus-visible {
+      transform: translateY(-1px);
+      border-color: rgba(255, 255, 255, 0.34);
+      background: rgba(255, 255, 255, 0.13);
+      outline: none;
+    }
+
+    .chat-form {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--space-2);
+      align-items: center;
+      background: rgba(5, 8, 18, 0.74);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: var(--radius-md);
+      padding: 0.5rem;
+    }
+
+    .chat-input {
+      border: none;
+      background: transparent;
+      color: var(--neooh-white);
+      font-size: 0.98rem;
+      padding: 0.65rem 0.7rem;
+      font-family: inherit;
+    }
+
+    .chat-input::placeholder {
+      color: rgba(255, 255, 255, 0.56);
+    }
+
+    .chat-input:focus {
+      outline: none;
+    }
+
+    .send-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 0.66rem 1rem;
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--neooh-white);
+      background: linear-gradient(120deg, var(--neooh-vivid), var(--neooh-deep), var(--soulcode-blue));
+      background-size: 160% 160%;
+      cursor: pointer;
+      transition: transform 0.2s ease, filter 0.2s ease;
+      animation: buttonShimmer 7s ease-in-out infinite;
+    }
+
+    .send-btn:hover,
+    .send-btn:focus-visible {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+      outline: none;
+    }
+
+    .site-footer {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      padding: 0.2rem 0.4rem;
+      text-align: center;
+    }
+
+    .assistive-text {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    @keyframes orbitPulse {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 48%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    @keyframes coreBreath {
+      0%,
+      100% {
+        transform: scale(1.05);
+        opacity: 0.35;
+      }
+      50% {
+        transform: scale(1.12);
+        opacity: 0.6;
+      }
+    }
+
+    @keyframes dustDrift {
+      from {
+        transform: translateY(0) rotate(0deg);
+      }
+      to {
+        transform: translateY(-22px) rotate(2deg);
+      }
+    }
+
+    @keyframes messageIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes statusPulse {
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 0.9;
+      }
+      50% {
+        transform: scale(1.18);
+        opacity: 1;
+      }
+    }
+
+    @keyframes buttonShimmer {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .site-wrap {
+        width: min(var(--layout-max), 94vw);
+      }
+
+      .topnav {
+        display: none;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .context-gallery {
+        grid-template-columns: 1fr;
+      }
+
+      .challenge-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .team-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .app {
+        width: 100%;
+        height: min(84vh, 860px);
+      }
+    }
+
+    @media (max-width: 780px) {
+      .hero {
+        min-height: 380px;
+      }
+
+      .chat-shell {
+        gap: var(--space-3);
+        padding: 1rem;
+      }
+
+      .chat-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .status {
+        font-size: 0.8rem;
+      }
+
+      .message {
+        max-width: 92%;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .topbar {
+        flex-wrap: wrap;
+      }
+
+      .hero-title {
+        max-width: 16ch;
+      }
+
+      .chat-form {
+        grid-template-columns: 1fr;
+      }
+
+      .send-btn {
+        width: 100%;
+      }
+
+      .team-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .context-tile {
+        min-height: 240px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="site-wrap">
+    <header id="inicio" aria-label="Cabecalho institucional NEOOH">
+      <div class="topbar">
+        <div class="brand" aria-label="Identidade NEOOH">
+          <div class="brand-badge" aria-hidden="true">N</div>
+          <div>
+            <p class="brand-title">NEOOH </p>
+            <p class="brand-subtitle">A melhor estratégia Phygital para a Sua Marca.</p>
+          </div>
+        </div>
+
+        <nav class="topnav" aria-label="Navegacao principal">
+          <a href="#inicio">Inicio</a>
+          <a href="#midia">Video</a>
+          <a href="#contextos">Contextos</a>
+          <a href="#assistente">Assistente</a>
+          <a href="#desafios">Vantagem</a>
+          <a href="#time">Time</a>
+        </nav>
+
+        <a class="cta-link" href="#assistente">Abrir chat</a>
+      </div>
+
+      <section class="hero" aria-label="Banner com imagem institucional">
+        <img
+          class="hero-video"
+          src="https://zenvia.com/wp-content/uploads/2023/07/iStock-1445022832.jpg?1"
+          alt="Imagem institucional sobre chatbot de IA generativa"
+          loading="eager"
+          onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=80';"
+        >
+
+        <div class="hero-content">
+          <p class="eyebrow">NEOOH</p>
+          <h1 class="hero-title">Nix, o Assistente Virtual da NEOOH</h1>
+          <p class="hero-description">
+            A rede NEOOH conta com mais de 30 mil telas digitais distribuídas pelo Brasil, com forte liderança em shopping centers.
+            A NEOOH transforma dados em atenção, lembranças e gatilhos em argumentos prontos para vender mais.
+          </p>
+          <div class="hero-tags">
+            <span class="hero-tag">30 mil telas digitais no Brasil</span>
+            <span class="hero-tag">+63% fixação do olhar em DOOH</span>
+            <span class="hero-tag">+47% lembrança visual da mensagem</span>
+          </div>
+          
+        </div>
+      </section>
+    </header>
+
+    <section id="assistente" class="app" aria-label="Experiencia de chat NEOOH">
+      <section class="chat-shell">
+        <header class="chat-header">
+          <div class="brand" aria-label="Identidade NEOOH">
+            <div class="brand-badge" aria-hidden="true">N</div>
+            <div>
+              <h2 class="brand-title">Agente Virtual NEOOH</h2>
+              <p class="brand-subtitle">Chat técnico para briefing de conteúdo</p>
+            </div>
+          </div>
+          <span class="status">Online</span>
+        </header>
+
+        <df-messenger location="us-central1" project-id="bootcam-llm-ai3" agent-id="3478309f-94d0-47e5-bfca-64b99a3913fa" language-code="pt-br" max-query-length="-1">
+          <df-messenger-chat chat-title="Chat"></df-messenger-chat>
+        </df-messenger>
+      </section>
+    </section>
+
+    <main id="jornada" class="page-main" aria-label="Area principal de atendimento">
+      <section id="faq" class="info-grid" aria-label="Resumo rapido de impacto comercial">
+        <article class="info-card">
+          <h2 class="info-card-title">Cobertura e liderança</h2>
+          <p class="info-card-text">A rede conta com mais de 30 mil telas digitais distribuídas pelo Brasil, com forte liderança em shopping centers.</p>
+        </article>
+
+        <article class="info-card">
+          <h2 class="info-card-title">Atenção e memória</h2>
+          <p class="info-card-text">Anúncios DOOH aumentam 63% o tempo de fixação do olhar e geram 47% mais lembrança visual da mensagem.</p>
+        </article>
+
+        <article class="info-card">
+          <h2 class="info-card-title">Gatilhos de conversão</h2>
+          <p class="info-card-text">Criativos com menos de 10 palavras têm 25% mais efetividade, e a qualidade do criativo responde por 75% da eficácia.</p>
+        </article>
+      </section>
+
+      <section id="midia" class="section-block" aria-label="Secao de video institucional">
+        <div class="section-heading">
+          <p class="section-kicker">Institucional em movimento</p>
+          <h2 class="section-title">O que a NEOOH pode fazer por sua marca?</h2>
+
+        </div>
+
+        <div class="institutional-video-wrap">
+          <iframe
+            class="institutional-video"
+            src="https://www.youtube.com/embed/fHL_zq0ZIik?autoplay=1&mute=1&loop=1&playlist=fHL_zq0ZIik&controls=1&rel=0&modestbranding=1&playsinline=1"
+            title="Video institucional NEOOH"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          >
+          </iframe>
+        </div>
+      </section>
+
+      <section id="contextos" class="section-block" aria-label="Secao de contextos de exibicao">
+        <div class="section-heading">
+          <p class="section-kicker">Ambientes de impacto</p>
+          <h2 class="section-title">Parques, cafeterias, clubes e shoppings.</h2>
+          <p class="section-description">
+            Como a comunicação OOH pode se adaptar a diferentes fluxos urbanos e de consumo.
+          </p>
+        </div>
+
+        <div class="context-gallery">
+          <article class="context-tile tile-park" aria-label="Parques">
+            <div class="context-tile-content">
+              <h3 class="context-tile-title">Parques</h3>
+              <p class="context-tile-text">A empresa impacta 40 milhões de visitantes por ano em 18 parques urbanos e turísticos estratégicos.</p>
+            </div>
+          </article>
+
+          <article class="context-tile tile-cafeteria" aria-label="Cafeterias">
+            <div class="context-tile-content">
+              <h3 class="context-tile-title">Cafeterias</h3>
+              <p class="context-tile-text">No case Boca do Forno, a presença digital cobre 14 lojas em Belo Horizonte.</p>
+            </div>
+          </article>
+
+          <article class="context-tile tile-club" aria-label="Clubes">
+            <div class="context-tile-content">
+              <h3 class="context-tile-title">Clubes</h3>
+              <p class="context-tile-text">No case do Minas Tênis Clube, a mídia alcança 81 mil associados e 4.000 espectadores.</p>
+            </div>
+          </article>
+
+          <article class="context-tile tile-shopping" aria-label="Shoppings">
+            <div class="context-tile-content">
+              <h3 class="context-tile-title">Shoppings</h3>
+              <p class="context-tile-text">Forte liderança em shopping centers com inventário de alto fluxo para campanhas de venda.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="desafios" class="section-block" aria-label="Desafios enfrentados">
+        <div class="section-heading">
+          <p class="section-kicker">Comparativo estratégico</p>
+          <h2 class="section-title">Por que o OOH da NEOOH é melhor que a mídia digital?</h2>
+          <p class="section-description">
+            Quatro motivos para defender o investimento: impacto inevitável, contexto real, audiência humana e presença visual dominante.
+          </p>
+        </div>
+
+        <div class="challenge-grid">
+          <article class="challenge-card">
+            <h3 class="challenge-title">1. Imunidade ao ad-block humano</h3>
+            <p class="challenge-text">No OOH não dá para pular ou bloquear anúncio. A mensagem entra no deslocamento e na espera, quando a atenção ao entorno é maior.</p>
+          </article>
+
+          <article class="challenge-card">
+            <h3 class="challenge-title">2. Contexto phygital em tempo real</h3>
+            <p class="challenge-text">A NEOOH ativa campanhas com base no ambiente físico, ajustando mensagem por clima, cidade e momento em poucos segundos.</p>
+          </article>
+
+          <article class="challenge-card">
+            <h3 class="challenge-title">3. Audiência real, sem bots</h3>
+            <p class="challenge-text">No OOH, o impacto é em pessoas reais em movimento. A mensuração usa dados e sensores para validar audiência humana.</p>
+          </article>
+
+          <article class="challenge-card">
+            <h3 class="challenge-title">4. Maior share of mind</h3>
+            <p class="challenge-text">Telas de grande formato dominam o campo visual, reforçam autoridade de marca e funcionam como âncora para o digital.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="time" class="section-block" aria-label="Secao do time">
+        <div class="section-heading">
+          <p class="section-kicker">Squad</p>
+          <h2 class="section-title">Time multidisciplinar</h2>
+        </div>
+
+        <div class="team-grid">
+          <article class="member-card">
+            <div class="member-avatar" aria-hidden="true">EJ</div>
+            <h3 class="member-name">Edimilza de Jessus</h3>
+            <p class="member-role">AI/ML Engineering</p>
+            <a href="https://www.linkedin.com/in/edimilza-c-jesus/" class="member-link" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          </article>
+
+          <article class="member-card">
+            <div class="member-avatar" aria-hidden="true">LF</div>
+            <h3 class="member-name">Leticia Fuzer</h3>
+            <p class="member-role">Consultora Empresarial</p>
+            <a href="https://www.linkedin.com/in/leticiamfuzer/" class="member-link" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          </article>
+
+          <article class="member-card">
+            <div class="member-avatar" aria-hidden="true">MG</div>
+            <h3 class="member-name">Murillo Guedes</h3>
+            <p class="member-role">Produtor Audiovisual</p>
+            <a href="https://www.linkedin.com/in/murillomanalischi/" class="member-link" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          </article>
+
+          <article class="member-card">
+            <div class="member-avatar" aria-hidden="true">TR</div>
+            <h3 class="member-name">Thais Rodrigues</h3>
+            <p class="member-role">Desenvolvedora Full Stack</p>
+            <a href="https://www.linkedin.com/in/thais-rodrigues-queiroz" class="member-link" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          </article>
+
+          <article class="member-card">
+            <div class="member-avatar" aria-hidden="true">WW</div>
+            <h3 class="member-name">Wendler Wendel</h3>
+            <p class="member-role">Designer Gráfico</p>
+            <a href="https://www.linkedin.com/in/wendler-wendel-789aa0255/" class="member-link" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      © 2026 Nix agente conversacional. Todos os direitos reservados.
+    </footer>
+  </div>
+
+  <script>
+    // O código de mock em JavaScript foi removido para usar a integração real do Dialogflow Messenger.
+  </script>
+
+  <!-- Scripts e Elementos do Dialogflow Messenger -->
+  <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
+</body>
+</html>
